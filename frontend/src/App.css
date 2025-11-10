@@ -1,0 +1,20 @@
+.App {
+  text-align: center;
+  padding: 2rem;
+}
+.form input {
+  margin: 0.5rem;
+  padding: 0.5rem;
+}
+.user-card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin: 0.5rem auto;
+  width: 300px;
+  border-radius: 8px;
+}
+button {
+  margin: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
