@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import {
+  getUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "./services/userService";
+//import axios from "axios";
 import "./App.css";
 
 function App() {
@@ -7,12 +13,17 @@ function App() {
   const [form, setForm] = useState({ first_name: "", last_name: "", email: "", gender: "" });
   const [editId, setEditId] = useState(null);
 
-  const API = "http://localhost:8005/api/users";
 
   // Fetch users
   const fetchUsers = async () => {
-    const res = await axios.get(API);
-    setUsers(res.data);
+    try {
+    console.log("🌐 API URL:", process.env.REACT_APP_API_URL);
+    const userData = await getUsers();
+    console.log("✅ Users fetched:", userData);
+    setUsers(userData);
+  } catch (error) {
+    console.error("❌ Error fetching users:", error);
+  }
   };
 
   useEffect(() => {
@@ -26,10 +37,10 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editId) {
-      await axios.patch(`${API}/${editId}`, form);
+      await updateUser(editId, form);
       setEditId(null);
     } else {
-      await axios.post(API, form);
+      await createUser(form);
     }
     setForm({ first_name: "", last_name: "", email: "", gender: "" });
     fetchUsers();
@@ -41,7 +52,7 @@ function App() {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`${API}/${id}`);
+    await deleteUser(id);
     fetchUsers();
   };
 
