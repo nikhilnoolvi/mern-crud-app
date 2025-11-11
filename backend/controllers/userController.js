@@ -1,6 +1,6 @@
 const User = require("../models/userModel");
 
-// ✅ Get all users
+// Get all users
 const getUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -10,7 +10,7 @@ const getUsers = async (req, res) => {
   }
 };
 
-// ✅ Create a new user
+// Create a new user
 const createUser = async (req, res) => {
   try {
     const newUser = new User(req.body);
@@ -21,7 +21,7 @@ const createUser = async (req, res) => {
   }
 };
 
-// ✅ Update a user
+// Update a user
 const updateUser = async (req, res) => {
   try {
     const updatedUser = await User.findByIdAndUpdate(
@@ -35,7 +35,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-// ✅ Delete a user
+// Delete a user
 const deleteUser = async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
@@ -45,7 +45,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// ✅ Export all functions
+// Export all functions
 module.exports = {
  getUsers,
  createUser,
