@@ -18,7 +18,7 @@ beforeEach(async () => {
 
 describe("User CRUD API", () => {
 
-  test("Create a new user (POST /api/user)", async () => {
+  test("Create a new user list (POST /api/user)", async () => {
     const res = await request(app)
       .post("/api/users")
       .send({
