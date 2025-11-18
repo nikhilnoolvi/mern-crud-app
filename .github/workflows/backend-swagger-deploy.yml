@@ -1,9 +1,15 @@
 name: Deploy Backend Swagger Documentation
 
+# Trigger deployment only on main branch pushes
 on:
   push:
     branches:
       - main
+
+# Ensure only one deployment runs at a time
+concurrency:
+  group: deploy-swagger
+  cancel-in-progress: true  # cancels previous in-progress runs automatically
 
 jobs:
   deploy-swagger:
