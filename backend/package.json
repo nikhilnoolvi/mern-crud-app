@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test npx jest --runInBand"
+    "test": "cross-env NODE_ENV=test npx jest --runInBand",
+    "generate-swagger": "node generate-swagger-doc.js"
   },
   "keywords": [],
   "author": "",
