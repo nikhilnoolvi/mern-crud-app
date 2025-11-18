@@ -58,7 +58,9 @@ jobs:
 
       - name: Fix Jest Permissions
         working-directory: backend
-        run: chmod +x ./node_modules/jest/bin/jest.js
+        run: |
+          chmod +x node_modules/.bin/jest
+          chmod +x node_modules/jest/bin/jest.js
 
       - name: Run Jest Tests
         working-directory: backend
