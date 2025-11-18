@@ -5,6 +5,9 @@ on:
     branches:
       - main   # Deploy whenever main branch is updated
 
+permissions:
+  contents: write   # REQUIRED: allow GitHub Actions to push to gh-pages
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
