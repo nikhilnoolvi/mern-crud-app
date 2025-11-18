@@ -58,7 +58,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>👤 User's Management systems</h1>
+      <h1>👤 User:s Management systems</h1>
 
       <form onSubmit={handleSubmit} className="form">
         <input name="first_name" value={form.first_name} onChange={handleChange} placeholder="First Name" />
