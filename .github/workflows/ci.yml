@@ -11,41 +11,40 @@ jobs:
     name: Backend – Install, DB, Test, Swagger
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ---- BACKEND SETUP ----
+      # ---- NODE SETUP ----
       - name: Setup Node 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # ---- BACKEND INSTALL ----
       - name: Install backend dependencies
         working-directory: backend
         run: npm install
 
-      # ---- TEMP MONGO DB FOR TESTING ----
-      - name: Start MongoDB Memory Server
-        run: |
-          echo "📦 Installing mongodb-memory-server"
-          npm install -g mongodb-memory-server
-
-      - name: Set Temporary MongoDB URI
-        run: |
-          export MONGO_URI="mongodb://127.0.0.1:27017/testdb"
-        shell: bash
-
-      # ---- BACKEND TESTING -------
+      # ---- BACKEND TESTING ----
       - name: Run Backend Tests
         working-directory: backend
-        env:
-          MONGO_URI: "mongodb://127.0.0.1:27017/testdb"
         run: |
           echo "🧪 Running Jest tests..."
-          npm test --if-present
+          npm test
 
-      # ---- SWAGGER GENERATION ----
+      # ---- SWAGGER CHECK ----
       - name: Validate Swagger Docs
         working-directory: backend
         run: |
@@ -57,11 +56,11 @@ jobs:
             exit 1
           fi
 
-  frontend:
-    name: Frontend – Install & Build
-    runs-on: ubuntu-latest
 
-    needs: backend
+  frontend:
+    name: Frontend - Install & Build
+    runs-on: ubuntu-latest
+    needs: backend  # ✔ Only run after backend CI succeeds
 
     steps:
       - name: Checkout code
