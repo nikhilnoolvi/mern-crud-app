@@ -1,29 +1,68 @@
 const fs = require("fs");
 const path = require("path");
-const swaggerUiDist = require("swagger-ui-dist");
 const swaggerSpec = require("./swagger"); // your swagger-jsdoc config
+const swaggerUiDist = require("swagger-ui-dist");
+const { exec } = require("child_process");
 
+// 1️⃣ Define docs folder
 const outputDir = path.join(__dirname, "../docs");
 
-// 1. Create docs folder if it doesn't exist
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir);
+// 2️⃣ Delete old docs folder if exists
+if (fs.existsSync(outputDir)) {
+  fs.rmSync(outputDir, { recursive: true, force: true });
+  console.log("Old docs folder deleted.");
 }
 
-// 2. Copy Swagger UI static files
+// 3️⃣ Create fresh docs folder
+fs.mkdirSync(outputDir);
+console.log("Docs folder created.");
+
+// 4️⃣ Write swagger.json
+fs.writeFileSync(path.join(outputDir, "swagger.json"), JSON.stringify(swaggerSpec, null, 2));
+console.log("swagger.json generated successfully!");
+
+// 5️⃣ Copy Swagger UI dist files locally
 const swaggerDistPath = swaggerUiDist.getAbsoluteFSPath();
 fs.cpSync(swaggerDistPath, outputDir, { recursive: true });
+console.log("Swagger UI static files copied locally.");
 
-// 3. Write swagger.json
-fs.writeFileSync(path.join(outputDir, "swagger.json"), JSON.stringify(swaggerSpec, null, 2));
+// 6️⃣ Create minimal index.html pointing to local files
+const indexHtmlContent = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>CRUDD API Swagger UI</title>
+    <link rel="stylesheet" href="swagger-ui.css" />
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="swagger-ui-bundle.js"></script>
+    <script src="swagger-ui-standalone-preset.js"></script>
+    <script>
+      window.onload = function() {
+        SwaggerUIBundle({
+          url: "./swagger.json",
+          dom_id: '#swagger-ui',
+          deepLinking: true,
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+          ],
+          layout: "BaseLayout"
+        });
+      }
+    </script>
+  </body>
+</html>`;
 
-// 4. Update index.html to load local swagger.json
-const indexHtmlPath = path.join(outputDir, "index.html");
-let indexHtml = fs.readFileSync(indexHtmlPath, "utf8");
-indexHtml = indexHtml.replace(
-  "https://petstore.swagger.io/v2/swagger.json",
-  "swagger.json"
-);
-fs.writeFileSync(indexHtmlPath, indexHtml);
+// Write index.html
+fs.writeFileSync(path.join(outputDir, "index.html"), indexHtmlContent);
+console.log("index.html created successfully!");
 
-console.log("Swagger documentation generated successfully!");
+// 7️⃣ Start live server automatically
+console.log("Starting live server at http://localhost:3000 ...");
+exec(`npx serve ${outputDir}`, (error, stdout, stderr) => {
+  if (error) console.error(`Error: ${error.message}`);
+  if (stderr) console.error(`Stderr: ${stderr}`);
+  console.log(stdout);
+});
