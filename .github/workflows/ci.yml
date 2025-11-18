@@ -1,0 +1,81 @@
+name: MERN CRUD – Full CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend:
+    name: Backend – Install, DB, Test, Swagger
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---- BACKEND SETUP ----
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+
+      # ---- TEMP MONGO DB FOR TESTING ----
+      - name: Start MongoDB Memory Server
+        run: |
+          echo "📦 Installing mongodb-memory-server"
+          npm install -g mongodb-memory-server
+
+      - name: Set Temporary MongoDB URI
+        run: |
+          export MONGO_URI="mongodb://127.0.0.1:27017/testdb"
+        shell: bash
+
+      # ---- BACKEND TESTING -------
+      - name: Run Backend Tests
+        working-directory: backend
+        env:
+          MONGO_URI: "mongodb://127.0.0.1:27017/testdb"
+        run: |
+          echo "🧪 Running Jest tests..."
+          npm test --if-present
+
+      # ---- SWAGGER GENERATION ----
+      - name: Validate Swagger Docs
+        working-directory: backend
+        run: |
+          echo "📝 Checking swagger.js"
+          if [ -f "swagger.js" ]; then
+            echo "Swagger file exists ✔"
+          else
+            echo "❌ swagger.js not found"
+            exit 1
+          fi
+
+  frontend:
+    name: Frontend – Install & Build
+    runs-on: ubuntu-latest
+
+    needs: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build React App
+        working-directory: frontend
+        run: npm run build
