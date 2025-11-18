@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 app.use("/api/users", userRoutes);
-// Swagger Documentation route
+// Swagger Documentation route is added
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 module.exports = app;
