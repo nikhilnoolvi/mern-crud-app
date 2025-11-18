@@ -10,15 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install Backend Dependencies
+      - name: Install backend dependencies
         run: |
           cd backend
           npm install
@@ -27,6 +27,11 @@ jobs:
         run: |
           cd backend
           npm run generate-swagger
+
+      - name: Debug docs folder
+        run: |
+          echo "Contents of docs folder:"
+          ls -la ./docs
 
       - name: Deploy Swagger UI to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
