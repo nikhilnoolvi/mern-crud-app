@@ -56,6 +56,10 @@ jobs:
       - name: Install cross-env globally
         run: npm install -g cross-env
 
+      - name: Fix Jest Permissions
+        working-directory: backend
+        run: chmod +x ./node_modules/jest/bin/jest.js
+
       - name: Run Jest Tests
         working-directory: backend
         env:
