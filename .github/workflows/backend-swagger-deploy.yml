@@ -1,33 +1,55 @@
-name: Deploy Swagger Docs
+name: Deploy Backend Swagger to GitHub Pages
 
 on:
   push:
     branches:
-      - main   # deploy on push to main branch
+      - main  # Deploy whenever main branch is updated
+
+permissions:
+  contents: write   # Allow GitHub Actions to push to gh-pages
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend   # <-- set working directory to backend
 
     steps:
-      - name: Checkout repository
+      # 1️⃣ Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
+      # 3️⃣ Install backend dependencies
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd backend
+          npm install
 
+      # 4️⃣ Clean old docs folder
+      - name: Clean old docs
+        run: |
+          if [ -d backend/../docs ]; then
+            rm -rf backend/../docs
+            echo "Old docs folder deleted."
+          fi
+
+      # 5️⃣ Generate Swagger docs
       - name: Generate Swagger docs
-        run: node generate-swagger-doc.js
+        run: |
+          cd backend
+          node generate-swagger-doc.js
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+      # 6️⃣ Deploy to GitHub Pages
+      - name: Deploy Swagger Docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
         with:
-          artifact_name: github-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs  # Relative to repo root after generation
+          publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: "Auto-deploy Swagger docs [skip ci]"
