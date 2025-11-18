@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/mern-crud-app/static/css/main.56ce3a87.css",
-    "main.js": "/mern-crud-app/static/js/main.ec4d0cef.js",
+    "main.js": "/mern-crud-app/static/js/main.1acf9ab8.js",
     "static/js/453.d7446e4a.chunk.js": "/mern-crud-app/static/js/453.d7446e4a.chunk.js",
     "index.html": "/mern-crud-app/index.html",
     "main.56ce3a87.css.map": "/mern-crud-app/static/css/main.56ce3a87.css.map",
-    "main.ec4d0cef.js.map": "/mern-crud-app/static/js/main.ec4d0cef.js.map",
+    "main.1acf9ab8.js.map": "/mern-crud-app/static/js/main.1acf9ab8.js.map",
     "453.d7446e4a.chunk.js.map": "/mern-crud-app/static/js/453.d7446e4a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.56ce3a87.css",
-    "static/js/main.ec4d0cef.js"
+    "static/js/main.1acf9ab8.js"
   ]
 }
