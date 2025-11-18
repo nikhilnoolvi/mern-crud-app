@@ -53,6 +53,9 @@ jobs:
           sleep 5
           echo "Server started successfully."
 
+      - name: Install cross-env globally
+        run: npm install -g cross-env
+
       - name: Run Jest Tests
         working-directory: backend
         env:
